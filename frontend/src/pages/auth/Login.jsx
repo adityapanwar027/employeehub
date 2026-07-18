@@ -1,0 +1,100 @@
+import axiosInstance from "../../services/axios";
+import { useState } from "react";
+
+function Login() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+  const response = await axiosInstance.post("/auth/login", formData);
+
+  localStorage.setItem("token", response.data.token);
+  localStorage.setItem("user", JSON.stringify(response.data.user));
+
+  console.log("Token:", localStorage.getItem("token"));
+  console.log("User:", JSON.parse(localStorage.getItem("user")));
+
+  alert(response.data.message);
+} catch (error) {
+    alert(error.response?.data?.message || "Login Failed");
+  }
+};
+
+  return (
+    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "#f5f5f5",
+      }}
+    >
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          width: "350px",
+          padding: "30px",
+          background: "#fff",
+          borderRadius: "10px",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+          Employee Login
+        </h2>
+
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+          }}
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "20px",
+          }}
+        />
+
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            padding: "10px",
+            cursor: "pointer",
+          }}
+        >
+          Login
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default Login;
