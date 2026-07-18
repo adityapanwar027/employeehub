@@ -1,7 +1,8 @@
 const Employee = require("../models/Employee");
+const asyncHandler = require("../middleware/asyncHandler");
 
 // Create Employee
-const createEmployee = async (req, res) => {
+const createEmployee = asyncHandler(async (req, res) => {
   try {
     const employee = await Employee.create(req.body);
 
@@ -16,7 +17,7 @@ const createEmployee = async (req, res) => {
       message: error.message,
     });
   }
-};
+});
 
 // Get All Employees
 const getEmployees = async (req, res) => {
