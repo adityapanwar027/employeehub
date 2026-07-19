@@ -1,3 +1,7 @@
+import DashboardLayout from "../../layouts/DashboardLayout";
+import DashboardCards from "../../components/dashboard/DashboardCards";
+import DashboardCharts from "../../components/dashboard/DashboardCharts";
+import RecentActivity from "../../components/dashboard/RecentActivity";
 import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
@@ -6,18 +10,19 @@ function Dashboard() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
     navigate("/login");
   };
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>Dashboard</h1>
+    <DashboardLayout>
+     <DashboardCards />
+     <DashboardCharts />
+     <RecentActivity />
 
       <button onClick={handleLogout}>
         Logout
       </button>
-    </div>
+    </DashboardLayout>
   );
 }
 
