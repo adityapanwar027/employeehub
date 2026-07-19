@@ -29,6 +29,12 @@ function Sidebar() {
             My Profile
           </Link>
         </li>
+
+        <li className="nav-item mb-2">
+          <Link to="/documents/upload" className="nav-link text-white">
+            Upload Documents
+          </Link>
+        </li>
       </ul>
     </div>
   );

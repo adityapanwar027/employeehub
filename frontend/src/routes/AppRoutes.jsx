@@ -12,6 +12,8 @@ import MyProfile from "../pages/profile/MyProfile";
 import UpdateProfile from "../pages/profile/UpdateProfile";
 import ChangePassword from "../pages/profile/ChangePassword";
 import ProfilePicture from "../pages/profile/ProfilePicture";
+import UploadDocument from "../pages/documents/UploadDocument";
+import DocumentList from "../pages/documents/DocumentList";
 
 function AppRoutes() {
   return (
@@ -112,6 +114,24 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/documents/upload"
+          element={
+            <ProtectedRoute>
+              <UploadDocument />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+  path="/documents/:employeeId"
+  element={
+    <ProtectedRoute>
+      <DocumentList />
+    </ProtectedRoute>
+  }
+/>
       </Routes>
     </BrowserRouter>
   );
