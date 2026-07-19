@@ -8,6 +8,10 @@ import EmployeeList from "../pages/employees/EmployeeList";
 import AddEmployee from "../pages/employees/AddEmployee";
 import EditEmployee from "../pages/employees/EditEmployee";
 import EmployeeDetails from "../pages/employees/EmployeeDetails";
+import MyProfile from "../pages/profile/MyProfile";
+import UpdateProfile from "../pages/profile/UpdateProfile";
+import ChangePassword from "../pages/profile/ChangePassword";
+import ProfilePicture from "../pages/profile/ProfilePicture";
 
 function AppRoutes() {
   return (
@@ -38,40 +42,76 @@ function AppRoutes() {
         />
 
         <Route
-  path="/employees"
-  element={
-    <ProtectedRoute>
-      <EmployeeList />
-    </ProtectedRoute>
-  }
-/>
+          path="/employees"
+          element={
+            <ProtectedRoute>
+              <EmployeeList />
+            </ProtectedRoute>
+          }
+        />
 
-<Route
-  path="/employees/add"
-  element={
-    <ProtectedRoute>
-      <AddEmployee />
-    </ProtectedRoute>
-  }
-/>
+        <Route
+          path="/employees/add"
+          element={
+            <ProtectedRoute>
+              <AddEmployee />
+            </ProtectedRoute>
+          }
+        />
 
-<Route
-  path="/employees/edit/:id"
-  element={
-    <ProtectedRoute>
-      <EditEmployee />
-    </ProtectedRoute>
-  }
-/>
+        <Route
+          path="/employees/edit/:id"
+          element={
+            <ProtectedRoute>
+              <EditEmployee />
+            </ProtectedRoute>
+          }
+        />
 
-<Route
-  path="/employees/:id"
-  element={
-    <ProtectedRoute>
-      <EmployeeDetails />
-    </ProtectedRoute>
-  }
-/>
+        <Route
+          path="/employees/:id"
+          element={
+            <ProtectedRoute>
+              <EmployeeDetails />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <MyProfile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile/update"
+          element={
+            <ProtectedRoute>
+              <UpdateProfile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile/change-password"
+          element={
+            <ProtectedRoute>
+              <ChangePassword />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile/picture"
+          element={
+            <ProtectedRoute>
+              <ProfilePicture />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

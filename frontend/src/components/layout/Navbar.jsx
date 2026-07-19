@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Navbar() {
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -13,7 +15,20 @@ function Navbar() {
     >
       <h2>Dashboard</h2>
 
-      <p>Welcome, {user?.name}</p>
+      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+        <Link
+          to="/profile"
+          style={{
+            textDecoration: "none",
+            color: "#000",
+            fontWeight: "bold",
+          }}
+        >
+          My Profile
+        </Link>
+
+        <p style={{ margin: 0 }}>Welcome, {user?.name}</p>
+      </div>
     </div>
   );
 }
