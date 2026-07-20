@@ -1,50 +1,44 @@
-import axios from "axios";
-
-const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
-
-// Attach JWT Token
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
+import axiosInstance from "./axios";
 
 // Upload Document
 export const uploadDocument = async (formData) => {
-  const response = await API.post("/documents/upload", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const response = await axiosInstance.post(
+    "/documents/upload",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 
   return response.data;
 };
 
-// Get All Documents
+// Get Employee Documents
 export const getDocuments = async (employeeId) => {
-  const response = await API.get(`/documents/employee/${employeeId}`);
+  const response = await axiosInstance.get(
+    `/documents/employee/${employeeId}`
+  );
 
   return response.data;
 };
 
 // Download Document
 export const downloadDocument = async (id) => {
-  const response = await API.get(`/documents/download/${id}`, {
-    responseType: "blob",
-  });
+  const response = await axiosInstance.get(
+    `/documents/download/${id}`,
+    {
+      responseType: "blob",
+    }
+  );
 
   return response;
 };
 
 // Delete Document
 export const deleteDocument = async (id) => {
-  const response = await API.delete(`/documents/${id}`);
+  const response = await axiosInstance.delete(`/documents/${id}`);
 
   return response.data;
 };

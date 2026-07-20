@@ -7,19 +7,67 @@ import SearchDepartment from "../../components/departments/SearchDepartment";
 function DepartmentList() {
   return (
     <DashboardLayout>
-      <h1>Departments</h1>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "25px",
+        }}
+      >
+        <h1
+          style={{
+            margin: 0,
+            color: "#212529",
+            fontWeight: "bold",
+          }}
+        >
+          Departments
+        </h1>
 
-      <AddDepartment />
+        <div
+          style={{
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+          }}
+        >
+          <AddDepartment />
+        </div>
 
-<hr />
+        <div
+          style={{
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+          }}
+        >
+          <EditDepartment />
+        </div>
 
-<EditDepartment />
-<hr />
+        <div
+          style={{
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+          }}
+        >
+          <DeleteDepartment />
+        </div>
 
-<DeleteDepartment />
-<hr />
-
-<SearchDepartment />
+        <div
+          style={{
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+          }}
+        >
+          <SearchDepartment />
+        </div>
+      </div>
     </DashboardLayout>
   );
 }

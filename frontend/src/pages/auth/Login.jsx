@@ -1,5 +1,7 @@
 import axiosInstance from "../../services/axios";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -7,30 +9,71 @@ function Login() {
     password: "",
   });
 
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+
+    setErrors({
+      ...errors,
+      [e.target.name]: "",
+    });
+  };
+
+  const validateForm = () => {
+    let newErrors = {};
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
+    ) {
+      newErrors.email = "Enter a valid email";
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-  const response = await axiosInstance.post("/auth/login", formData);
+    if (!validateForm()) return;
 
-  localStorage.setItem("token", response.data.token);
-  localStorage.setItem("user", JSON.stringify(response.data.user));
+    try {
+      setLoading(true);
 
-  console.log("Token:", localStorage.getItem("token"));
-  console.log("User:", JSON.parse(localStorage.getItem("user")));
+      const response = await axiosInstance.post("/auth/login", formData);
 
-  alert(response.data.message);
-} catch (error) {
-    alert(error.response?.data?.message || "Login Failed");
-  }
-};
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+
+      console.log("Token:", localStorage.getItem("token"));
+      console.log("User:", JSON.parse(localStorage.getItem("user")));
+
+      toast.success(response.data.message || "Login Successful");
+
+setTimeout(() => {
+  navigate("/dashboard");
+}, 1000);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -65,9 +108,21 @@ function Login() {
           style={{
             width: "100%",
             padding: "10px",
-            marginBottom: "15px",
           }}
         />
+
+        {errors.email && (
+          <p
+            style={{
+              color: "red",
+              fontSize: "14px",
+              marginTop: "5px",
+              marginBottom: "15px",
+            }}
+          >
+            {errors.email}
+          </p>
+        )}
 
         <input
           type="password"
@@ -78,19 +133,33 @@ function Login() {
           style={{
             width: "100%",
             padding: "10px",
-            marginBottom: "20px",
           }}
         />
 
+        {errors.password && (
+          <p
+            style={{
+              color: "red",
+              fontSize: "14px",
+              marginTop: "5px",
+              marginBottom: "20px",
+            }}
+          >
+            {errors.password}
+          </p>
+        )}
+
         <button
           type="submit"
+          disabled={loading}
           style={{
             width: "100%",
             padding: "10px",
-            cursor: "pointer",
+            cursor: loading ? "not-allowed" : "pointer",
+            opacity: loading ? 0.7 : 1,
           }}
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>

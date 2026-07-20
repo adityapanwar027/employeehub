@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../services/axios";
+import { toast } from "react-toastify";
 import { uploadDocument } from "../../services/documentService";
 
 const DocumentForm = () => {
@@ -9,35 +10,21 @@ const DocumentForm = () => {
   const [document, setDocument] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
-
-  const fetchEmployees = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/employees`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setEmployees(data.employees || data);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to load employees");
-    }
-  };
-
+ const fetchEmployees = async () => {
+  try {
+    const { data } = await axiosInstance.get("/employees");
+    setEmployees(data.employees);
+  } catch (error) {
+    console.error(error);
+    toast.error(error.response?.data?.message || "Failed to load employees");
+  }
+};
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!employee || !documentName || !document) {
-      return alert("Please fill all fields");
+      toast.error("Please fill all fields");
+      return;
     }
 
     try {
@@ -50,7 +37,7 @@ const DocumentForm = () => {
 
       await uploadDocument(formData);
 
-      alert("Document uploaded successfully");
+      toast.success("Document uploaded successfully");
 
       setEmployee("");
       setDocumentName("");
@@ -58,66 +45,136 @@ const DocumentForm = () => {
 
       e.target.reset();
     } catch (error) {
-      alert(error.response?.data?.message || "Upload failed");
+      console.error(error);
+
+      toast.error(
+        error.response?.data?.message || "Upload failed"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="card shadow p-4">
-      <h3 className="mb-4">Upload Document</h3>
-
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Employee</label>
-
-          <select
-            className="form-select"
-            value={employee}
-            onChange={(e) => setEmployee(e.target.value)}
-          >
-            <option value="">Select Employee</option>
-
-            {employees.map((emp) => (
-              <option key={emp._id} value={emp._id}>
-                {emp.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Document Name</label>
-
-          <input
-            type="text"
-            className="form-control"
-            value={documentName}
-            onChange={(e) => setDocumentName(e.target.value)}
-            placeholder="Enter document name"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Choose Document</label>
-
-          <input
-            type="file"
-            className="form-control"
-            onChange={(e) => setDocument(e.target.files[0])}
-          />
-        </div>
-
-        <button
-          className="btn btn-primary"
-          type="submit"
-          disabled={loading}
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+      }}
+    >
+      <div>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "8px",
+            fontWeight: "600",
+          }}
         >
-          {loading ? "Uploading..." : "Upload"}
-        </button>
-      </form>
-    </div>
+          Employee
+        </label>
+
+        <select
+          value={employee}
+          onChange={(e) => setEmployee(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "12px",
+            border: "1px solid #ced4da",
+            borderRadius: "8px",
+            boxSizing: "border-box",
+          }}
+        >
+          <option value="">Select Employee</option>
+
+          {employees.map((emp) => (
+            <option key={emp._id} value={emp._id}>
+              {emp.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "8px",
+            fontWeight: "600",
+          }}
+        >
+          Document Name
+        </label>
+
+        <input
+          type="text"
+          placeholder="Enter document name"
+          value={documentName}
+          onChange={(e) => setDocumentName(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "12px",
+            border: "1px solid #ced4da",
+            borderRadius: "8px",
+            boxSizing: "border-box",
+          }}
+        />
+      </div>
+
+      <div>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "8px",
+            fontWeight: "600",
+          }}
+        >
+          Choose Document
+        </label>
+
+        <input
+          type="file"
+          onChange={(e) => setDocument(e.target.files[0])}
+          style={{
+            width: "100%",
+            padding: "10px",
+            border: "1px solid #ced4da",
+            borderRadius: "8px",
+            boxSizing: "border-box",
+          }}
+        />
+      </div>
+
+      {document && (
+        <p
+          style={{
+            margin: 0,
+            color: "#6c757d",
+            fontSize: "14px",
+          }}
+        >
+          Selected: <strong>{document.name}</strong>
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={loading}
+        style={{
+          padding: "12px",
+          background: "#0d6efd",
+          color: "#fff",
+          border: "none",
+          borderRadius: "8px",
+          fontSize: "16px",
+          fontWeight: "600",
+          cursor: loading ? "not-allowed" : "pointer",
+        }}
+      >
+        {loading ? "Uploading..." : "Upload Document"}
+      </button>
+    </form>
   );
 };
 

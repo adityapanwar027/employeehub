@@ -15,13 +15,41 @@ function Dashboard() {
 
   return (
     <DashboardLayout>
-     <DashboardCards />
-     <DashboardCharts />
-     <RecentActivity />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "25px",
+        }}
+      >
+        <DashboardCards />
 
-      <button onClick={handleLogout}>
-        Logout
-      </button>
+        <DashboardCharts />
+
+        <RecentActivity />
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <button
+            onClick={handleLogout}
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#dc3545",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontWeight: "600",
+            }}
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </DashboardLayout>
   );
 }

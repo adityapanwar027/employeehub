@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { uploadProfilePicture } from "../../services/profileService";
 
 const ProfilePicture = () => {
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setImage(e.target.files[0]);
@@ -13,7 +15,7 @@ const ProfilePicture = () => {
     e.preventDefault();
 
     if (!image) {
-      alert("Please select an image");
+      toast.error("Please select an image");
       return;
     }
 
@@ -21,32 +23,105 @@ const ProfilePicture = () => {
     formData.append("profilePicture", image);
 
     try {
+      setLoading(true);
+
       const res = await uploadProfilePicture(formData);
-      alert(res.message);
+
+      toast.success(res.message);
+
+      setImage(null);
+      e.target.reset();
     } catch (error) {
-      alert(error.response?.data?.message || "Upload failed");
+      toast.error(
+        error.response?.data?.message || "Upload failed"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <DashboardLayout>
-      <div className="container mt-4">
-        <h2 className="mb-4">Profile Picture</h2>
+      <div
+        style={{
+          maxWidth: "700px",
+          margin: "0 auto",
+          background: "#fff",
+          padding: "30px",
+          borderRadius: "10px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+        }}
+      >
+        <h2
+          style={{
+            marginBottom: "25px",
+            fontWeight: "bold",
+            color: "#212529",
+          }}
+        >
+          Upload Profile Picture
+        </h2>
 
-        <form onSubmit={handleSubmit} className="card p-4 shadow-sm">
-          <div className="mb-3">
-            <label className="form-label">Select Profile Picture</label>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+          }}
+        >
+          <div>
+            <label
+              style={{
+                fontWeight: "600",
+                display: "block",
+                marginBottom: "8px",
+              }}
+            >
+              Select Profile Picture
+            </label>
 
             <input
               type="file"
-              className="form-control"
               accept="image/*"
               onChange={handleChange}
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "1px solid #ced4da",
+                borderRadius: "8px",
+                boxSizing: "border-box",
+              }}
             />
           </div>
 
-          <button type="submit" className="btn btn-primary">
-            Upload Picture
+          {image && (
+            <p
+              style={{
+                margin: 0,
+                color: "#6c757d",
+                fontSize: "14px",
+              }}
+            >
+              Selected: <strong>{image.name}</strong>
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              padding: "12px",
+              background: "#198754",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              fontSize: "16px",
+              fontWeight: "600",
+              cursor: loading ? "not-allowed" : "pointer",
+            }}
+          >
+            {loading ? "Uploading..." : "Upload Picture"}
           </button>
         </form>
       </div>

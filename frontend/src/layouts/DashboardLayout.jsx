@@ -3,15 +3,34 @@ import Navbar from "../components/layout/Navbar";
 
 function DashboardLayout({ children }) {
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: "#f8f9fa",
+      }}
+    >
       <Sidebar />
 
-      <div style={{ flex: 1 }}>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          minWidth: 0,
+        }}
+      >
         <Navbar />
 
-        <div style={{ padding: "20px" }}>
+        <main
+          style={{
+            flex: 1,
+            padding: "25px",
+            overflowX: "auto",
+          }}
+        >
           {children}
-        </div>
+        </main>
       </div>
     </div>
   );

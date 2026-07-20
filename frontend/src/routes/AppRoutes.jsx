@@ -14,6 +14,7 @@ import ChangePassword from "../pages/profile/ChangePassword";
 import ProfilePicture from "../pages/profile/ProfilePicture";
 import UploadDocument from "../pages/documents/UploadDocument";
 import DocumentList from "../pages/documents/DocumentList";
+import NotFound from "../pages/NotFound";
 
 function AppRoutes() {
   return (
@@ -125,16 +126,20 @@ function AppRoutes() {
         />
 
         <Route
-  path="/documents/:employeeId"
-  element={
-    <ProtectedRoute>
-      <DocumentList />
-    </ProtectedRoute>
-  }
-/>
+          path="/documents/:employeeId"
+          element={
+            <ProtectedRoute>
+              <DocumentList />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 404 Page */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
 }
+
 
 export default AppRoutes;

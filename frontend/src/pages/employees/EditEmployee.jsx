@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   getEmployeeById,
   updateEmployee,
@@ -22,10 +23,10 @@ const EditEmployee = () => {
     department: "",
   });
 
-//   useEffect(() => {
-//     loadDepartments();
-//     loadEmployee();
-//   }, []);
+  useEffect(() => {
+    loadDepartments();
+    loadEmployee();
+  }, []);
 
   async function loadDepartments() {
     try {
@@ -33,8 +34,9 @@ const EditEmployee = () => {
       setDepartments(data.departments);
     } catch (error) {
       console.error(error);
+      toast.error("Failed to load departments");
     }
-  };
+  }
 
   async function loadEmployee() {
     try {
@@ -48,18 +50,11 @@ const EditEmployee = () => {
         salary: data.employee.salary,
         department: data.employee.department?._id || "",
       });
-
-      
     } catch (error) {
       console.error(error);
-      alert("Failed to load employee");
+      toast.error("Failed to load employee");
     }
-  };
-
-   useEffect(() => {
-    loadDepartments();
-    loadEmployee();
-  }, []);
+  }
 
   const handleChange = (e) => {
     setFormData({
@@ -76,15 +71,14 @@ const EditEmployee = () => {
 
       await updateEmployee(id, formData);
 
-      alert("Employee updated successfully");
+      toast.success("Employee updated successfully");
 
       navigate("/employees");
     } catch (error) {
       console.error(error);
 
-      alert(
-        error.response?.data?.message ||
-          "Failed to update employee"
+      toast.error(
+        error.response?.data?.message || "Failed to update employee"
       );
     } finally {
       setLoading(false);
@@ -92,81 +86,149 @@ const EditEmployee = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Edit Employee</h2>
+    <div
+      style={{
+        maxWidth: "700px",
+        margin: "0 auto",
+        background: "#fff",
+        padding: "30px",
+        borderRadius: "10px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+      }}
+    >
+      <h2
+        style={{
+          marginBottom: "25px",
+          fontWeight: "bold",
+          color: "#212529",
+        }}
+      >
+        Edit Employee
+      </h2>
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Employee Name</label>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "18px",
+        }}
+      >
+        <div>
+          <label style={{ fontWeight: "600" }}>Employee Name</label>
+
           <input
             type="text"
-            className="form-control"
             name="name"
             value={formData.name}
             onChange={handleChange}
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              padding: "12px",
+              border: "1px solid #ced4da",
+              borderRadius: "8px",
+              boxSizing: "border-box",
+            }}
           />
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Email</label>
+        <div>
+          <label style={{ fontWeight: "600" }}>Email</label>
+
           <input
             type="email"
-            className="form-control"
             name="email"
             value={formData.email}
             onChange={handleChange}
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              padding: "12px",
+              border: "1px solid #ced4da",
+              borderRadius: "8px",
+              boxSizing: "border-box",
+            }}
           />
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Phone</label>
+        <div>
+          <label style={{ fontWeight: "600" }}>Phone</label>
+
           <input
             type="text"
-            className="form-control"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              padding: "12px",
+              border: "1px solid #ced4da",
+              borderRadius: "8px",
+              boxSizing: "border-box",
+            }}
           />
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Position</label>
+        <div>
+          <label style={{ fontWeight: "600" }}>Position</label>
+
           <input
             type="text"
-            className="form-control"
             name="position"
             value={formData.position}
             onChange={handleChange}
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              padding: "12px",
+              border: "1px solid #ced4da",
+              borderRadius: "8px",
+              boxSizing: "border-box",
+            }}
           />
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Salary</label>
+        <div>
+          <label style={{ fontWeight: "600" }}>Salary</label>
+
           <input
             type="number"
-            className="form-control"
             name="salary"
             value={formData.salary}
             onChange={handleChange}
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              padding: "12px",
+              border: "1px solid #ced4da",
+              borderRadius: "8px",
+              boxSizing: "border-box",
+            }}
           />
         </div>
 
-        <div className="mb-4">
-          <label className="form-label">Department</label>
+        <div>
+          <label style={{ fontWeight: "600" }}>Department</label>
 
           <select
-            className="form-select"
             name="department"
             value={formData.department}
             onChange={handleChange}
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              padding: "12px",
+              border: "1px solid #ced4da",
+              borderRadius: "8px",
+              boxSizing: "border-box",
+            }}
           >
             <option value="">Select Department</option>
 
             {departments.map((department) => (
-              <option
-                key={department._id}
-                value={department._id}
-              >
+              <option key={department._id} value={department._id}>
                 {department.name}
               </option>
             ))}
@@ -175,10 +237,20 @@ const EditEmployee = () => {
 
         <button
           type="submit"
-          className="btn btn-warning"
           disabled={loading}
+          style={{
+            marginTop: "10px",
+            padding: "12px",
+            background: "#ffc107",
+            color: "#212529",
+            border: "none",
+            borderRadius: "8px",
+            fontSize: "16px",
+            fontWeight: "600",
+            cursor: loading ? "not-allowed" : "pointer",
+          }}
         >
-          {loading ? "Updating..." : "Update Employee"}
+          {loading ? "Updating Employee..." : "Update Employee"}
         </button>
       </form>
     </div>
