@@ -1,4 +1,5 @@
 const Document = require("../models/Document");
+const uploadToAzure = require("../utils/uploadToAzure");
 
 // Upload Document
 const uploadDocument = async (req, res) => {
@@ -12,11 +13,13 @@ const uploadDocument = async (req, res) => {
       });
     }
 
+    const fileUrl = await uploadToAzure(req.file);
+
     const document = await Document.create({
       employee,
       documentName,
       fileName: req.file.originalname,
-      filePath: req.file.path,
+      filePath: fileUrl,
       fileType: req.file.mimetype,
       fileSize: req.file.size,
     });
@@ -65,7 +68,10 @@ const downloadDocument = async (req, res) => {
       });
     }
 
-    res.download(document.filePath, document.fileName);
+    res.status(200).json({
+      success: true,
+      fileUrl: document.filePath,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,

@@ -1,8 +1,24 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import {
+  FaUserCircle,
+  FaEnvelope,
+  FaPhone,
+  FaBuilding,
+  FaUserShield,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaEdit,
+  FaKey,
+  FaCamera,
+} from "react-icons/fa";
+
 import { getMyProfile } from "../../services/profileService";
 import DashboardLayout from "../../layouts/DashboardLayout";
+
+import "./MyProfile.css";
 
 const MyProfile = () => {
   const [user, setUser] = useState(null);
@@ -13,6 +29,7 @@ const MyProfile = () => {
       setLoading(true);
 
       const data = await getMyProfile();
+
       setUser(data.user);
     } catch (error) {
       console.error(error);
@@ -29,157 +46,125 @@ const MyProfile = () => {
   if (loading) {
     return (
       <DashboardLayout>
-        <h3
-          style={{
-            textAlign: "center",
-            marginTop: "50px",
-          }}
-        >
-          Loading profile...
-        </h3>
+        <div className="profile-loading">
+          Loading Profile...
+        </div>
       </DashboardLayout>
     );
   }
-
-  return (
+    return (
     <DashboardLayout>
-      <div
-        style={{
-          maxWidth: "850px",
-          margin: "0 auto",
-          background: "#fff",
-          padding: "30px",
-          borderRadius: "10px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-        }}
+      <motion.div
+        className="profile-page"
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
       >
-        <h2
-          style={{
-            marginBottom: "30px",
-            fontWeight: "bold",
-            color: "#212529",
-          }}
-        >
-          My Profile
-        </h2>
+        <div className="profile-card">
 
-        <div
-          style={{
-            textAlign: "center",
-            marginBottom: "30px",
-          }}
-        >
-          <img
-            src={user?.profilePicture || "https://via.placeholder.com/150"}
-            alt="Profile"
-            style={{
-              width: "150px",
-              height: "150px",
-              borderRadius: "50%",
-              objectFit: "cover",
-              border: "4px solid #0d6efd",
-            }}
-          />
+          <div className="profile-header">
+
+            <div className="profile-avatar">
+
+              {user?.profilePicture ? (
+                <img
+                  src={user.profilePicture}
+                  alt={user.name}
+                />
+              ) : (
+                <FaUserCircle />
+              )}
+
+            </div>
+
+            <div className="profile-title">
+              <h1>{user?.name}</h1>
+
+              <span className="role-badge">
+                <FaUserShield />
+                {user?.role}
+              </span>
+
+              <span className="status-badge">
+                <FaCheckCircle />
+                {user?.status || "Active"}
+              </span>
+            </div>
+
+          </div>
+
+          <div className="profile-grid">
+
+            <div className="info-card">
+              <FaEnvelope className="info-icon" />
+              <div>
+                <label>Email</label>
+                <p>{user?.email}</p>
+              </div>
+            </div>
+
+            <div className="info-card">
+              <FaPhone className="info-icon" />
+              <div>
+                <label>Phone</label>
+                <p>{user?.phone || "N/A"}</p>
+              </div>
+            </div>
+
+            <div className="info-card">
+              <FaBuilding className="info-icon" />
+              <div>
+                <label>Department</label>
+                <p>{user?.department || "N/A"}</p>
+              </div>
+            </div>
+
+            <div className="info-card">
+              <FaCalendarAlt className="info-icon" />
+              <div>
+                <label>Joined On</label>
+                <p>
+                  {user?.createdAt
+                    ? new Date(
+                        user.createdAt
+                      ).toLocaleDateString()
+                    : "N/A"}
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="profile-actions">
+
+            <Link
+              to="/profile/update"
+              className="profile-btn blue"
+            >
+              <FaEdit />
+              Update Profile
+            </Link>
+
+            <Link
+              to="/profile/change-password"
+              className="profile-btn yellow"
+            >
+              <FaKey />
+              Change Password
+            </Link>
+
+            <Link
+              to="/profile/picture"
+              className="profile-btn green"
+            >
+              <FaCamera />
+              Profile Picture
+            </Link>
+
+          </div>
+
         </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "20px",
-            marginBottom: "30px",
-          }}
-        >
-          <div>
-            <strong>Full Name</strong>
-            <p>{user?.name}</p>
-          </div>
-
-          <div>
-            <strong>Email</strong>
-            <p>{user?.email}</p>
-          </div>
-
-          <div>
-            <strong>Phone</strong>
-            <p>{user?.phone || "N/A"}</p>
-          </div>
-
-          <div>
-            <strong>Department</strong>
-            <p>{user?.department || "N/A"}</p>
-          </div>
-
-          <div>
-            <strong>Role</strong>
-            <p>{user?.role}</p>
-          </div>
-
-          <div>
-            <strong>Status</strong>
-            <p>{user?.status || "Active"}</p>
-          </div>
-
-          <div>
-            <strong>Joined On</strong>
-            <p>
-              {user?.createdAt
-                ? new Date(user.createdAt).toLocaleDateString()
-                : "N/A"}
-            </p>
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            gap: "12px",
-            flexWrap: "wrap",
-          }}
-        >
-          <Link
-            to="/profile/update"
-            style={{
-              background: "#0d6efd",
-              color: "#fff",
-              padding: "10px 18px",
-              borderRadius: "8px",
-              textDecoration: "none",
-              fontWeight: "600",
-            }}
-          >
-            Update Profile
-          </Link>
-
-          <Link
-            to="/profile/change-password"
-            style={{
-              background: "#ffc107",
-              color: "#212529",
-              padding: "10px 18px",
-              borderRadius: "8px",
-              textDecoration: "none",
-              fontWeight: "600",
-            }}
-          >
-            Change Password
-          </Link>
-
-          <Link
-            to="/profile/picture"
-            style={{
-              background: "#198754",
-              color: "#fff",
-              padding: "10px 18px",
-              borderRadius: "8px",
-              textDecoration: "none",
-              fontWeight: "600",
-            }}
-          >
-            Profile Picture
-          </Link>
-        </div>
-      </div>
+      </motion.div>
     </DashboardLayout>
   );
 };

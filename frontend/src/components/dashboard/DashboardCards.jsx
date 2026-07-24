@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../services/axios";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import {
+  FaUsers,
+  FaBuilding,
+  FaUserShield,
+} from "react-icons/fa";
+import "./DashboardCards.css";
 
 function DashboardCards() {
   const [stats, setStats] = useState({
@@ -16,11 +23,11 @@ function DashboardCards() {
   const fetchDashboardStats = async () => {
     try {
       const response = await axiosInstance.get("/dashboard/stats");
-
       setStats(response.data.stats);
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "Failed to load dashboard statistics"
+        error.response?.data?.message ||
+          "Failed to load dashboard statistics"
       );
     }
   };
@@ -29,67 +36,54 @@ function DashboardCards() {
     {
       title: "Total Employees",
       value: stats.totalEmployees,
-      color: "#0d6efd",
+      icon: <FaUsers />,
+      gradient: "linear-gradient(135deg,#2563eb,#60a5fa)",
     },
     {
-      title: "Total Departments",
+      title: "Departments",
       value: stats.totalDepartments,
-      color: "#198754",
+      icon: <FaBuilding />,
+      gradient: "linear-gradient(135deg,#10b981,#34d399)",
     },
     {
-      title: "Total Users",
+      title: "System Users",
       value: stats.totalUsers,
-      color: "#6f42c1",
+      icon: <FaUserShield />,
+      gradient: "linear-gradient(135deg,#7c3aed,#a855f7)",
     },
   ];
 
   return (
-    <div>
-      <h2
-        style={{
-          marginBottom: "20px",
-          fontWeight: "bold",
-        }}
-      >
-        Dashboard Statistics
-      </h2>
+    <div className="dashboard-cards">
+      <div className="dashboard-header">
+        <h2>Dashboard Overview</h2>
+        <p>Quick overview of your EmployeeHub statistics.</p>
+      </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: "20px",
-        }}
-      >
-        {cards.map((card) => (
-          <div
+      <div className="cards-grid">
+        {cards.map((card, index) => (
+          <motion.div
             key={card.title}
+            className="stat-card"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.15 }}
+            whileHover={{
+              scale: 1.04,
+              y: -8,
+            }}
             style={{
-              background: "#fff",
-              borderLeft: `6px solid ${card.color}`,
-              borderRadius: "10px",
-              padding: "20px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              background: card.gradient,
             }}
           >
-            <h5
-              style={{
-                marginBottom: "10px",
-                color: "#6c757d",
-              }}
-            >
-              {card.title}
-            </h5>
+            <div className="card-top">
+              <div className="card-icon">{card.icon}</div>
+            </div>
 
-            <h2
-              style={{
-                margin: 0,
-                color: card.color,
-              }}
-            >
-              {card.value}
-            </h2>
-          </div>
+            <h4>{card.title}</h4>
+
+            <h1>{card.value}</h1>
+          </motion.div>
         ))}
       </div>
     </div>

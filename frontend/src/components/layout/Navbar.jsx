@@ -1,59 +1,33 @@
+import { FaBell, FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import "./Navbar.css";
 
 function Navbar() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   return (
-    <nav
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "15px 25px",
-        background: "#fff",
-        borderBottom: "1px solid #dee2e6",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-        position: "sticky",
-        top: 0,
-        zIndex: 1000,
-      }}
-    >
-      <h3
-        style={{
-          margin: 0,
-          color: "#0d6efd",
-          fontWeight: "bold",
-        }}
-      >
-        Dashboard
-      </h3>
+    <nav className="navbar">
+      <div>
+        <h2 className="navbar-title">Dashboard</h2>
+        <p className="navbar-subtitle">
+          Welcome back! Here's what's happening today.
+        </p>
+      </div>
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "20px",
-        }}
-      >
-        <Link
-          to="/profile"
-          style={{
-            textDecoration: "none",
-            color: "#212529",
-            fontWeight: "600",
-          }}
-        >
-          My Profile
+      <div className="navbar-right">
+        <div className="notification">
+          <FaBell />
+        </div>
+
+        <Link to="/profile" className="profile-link">
+          <FaUserCircle className="profile-icon" />
+          <div>
+            <span className="profile-name">
+              {user?.name || "User"}
+            </span>
+            <small>Administrator</small>
+          </div>
         </Link>
-
-        <span
-          style={{
-            fontWeight: "500",
-            color: "#495057",
-          }}
-        >
-          Welcome, {user?.name || "User"}
-        </span>
       </div>
     </nav>
   );

@@ -1,66 +1,66 @@
+import {
+  FaTachometerAlt,
+  FaUsers,
+  FaBuilding,
+  FaUserCircle,
+  FaFileUpload,
+} from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
+import "./Sidebar.css";
 
 function Sidebar() {
   const location = useLocation();
 
   const menuItems = [
-    { name: "Dashboard", path: "/dashboard" },
-    { name: "Employees", path: "/employees" },
-    { name: "Departments", path: "/departments" },
-    { name: "My Profile", path: "/profile" },
-    { name: "Upload Documents", path: "/documents/upload" },
+    {
+      name: "Dashboard",
+      path: "/dashboard",
+      icon: <FaTachometerAlt />,
+    },
+    {
+      name: "Employees",
+      path: "/employees",
+      icon: <FaUsers />,
+    },
+    {
+      name: "Departments",
+      path: "/departments",
+      icon: <FaBuilding />,
+    },
+    {
+      name: "My Profile",
+      path: "/profile",
+      icon: <FaUserCircle />,
+    },
+    {
+      name: "Upload Documents",
+      path: "/documents/upload",
+      icon: <FaFileUpload />,
+    },
   ];
 
   return (
-    <div
-      style={{
-        width: "250px",
-        minHeight: "100vh",
-        background: "#212529",
-        color: "#fff",
-        padding: "20px 15px",
-        position: "sticky",
-        top: 0,
-      }}
-    >
-      <h3
-        style={{
-          textAlign: "center",
-          marginBottom: "30px",
-          fontWeight: "bold",
-        }}
-      >
-        EmployeeHub
-      </h3>
+    <aside className="sidebar">
+      <div className="sidebar-logo">
+        <h2>EmployeeHub</h2>
+        <p>HR Management</p>
+      </div>
 
-      <ul
-        style={{
-          listStyle: "none",
-          padding: 0,
-          margin: 0,
-        }}
-      >
+      <nav className="sidebar-menu">
         {menuItems.map((item) => (
-          <li key={item.path} style={{ marginBottom: "10px" }}>
-            <Link
-              to={item.path}
-              style={{
-                display: "block",
-                padding: "12px 15px",
-                borderRadius: "8px",
-                textDecoration: "none",
-                color: "#fff",
-                backgroundColor:
-                  location.pathname === item.path ? "#0d6efd" : "transparent",
-                transition: "0.3s",
-              }}
-            >
-              {item.name}
-            </Link>
-          </li>
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`sidebar-link ${
+              location.pathname === item.path ? "active" : ""
+            }`}
+          >
+            <span className="sidebar-icon">{item.icon}</span>
+            <span>{item.name}</span>
+          </Link>
         ))}
-      </ul>
-    </div>
+      </nav>
+    </aside>
   );
 }
 

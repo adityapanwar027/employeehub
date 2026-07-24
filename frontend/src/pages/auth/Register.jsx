@@ -2,6 +2,7 @@ import { useState } from "react";
 import axiosInstance from "../../services/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import "./Register.css";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -83,119 +84,66 @@ setTimeout(() => {
   };
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#f5f5f5",
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          width: "350px",
-          padding: "30px",
-          background: "#fff",
-          borderRadius: "10px",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-        }}
+  <div className="login-container">
+    <form onSubmit={handleSubmit} className="login-card">
+      <h2 className="login-title">Register</h2>
+
+      <label className="login-label">Full Name</label>
+      <input
+        type="text"
+        name="name"
+        placeholder="Enter your full name"
+        value={formData.name}
+        onChange={handleChange}
+        className="login-input"
+      />
+
+      {errors.name && <p className="error-text">{errors.name}</p>}
+
+      <label className="login-label">Email</label>
+      <input
+        type="email"
+        name="email"
+        placeholder="Enter your email"
+        value={formData.email}
+        onChange={handleChange}
+        className="login-input"
+      />
+
+      {errors.email && <p className="error-text">{errors.email}</p>}
+
+      <label className="login-label">Password</label>
+      <input
+        type="password"
+        name="password"
+        placeholder="Enter your password"
+        value={formData.password}
+        onChange={handleChange}
+        className="login-input"
+      />
+
+      {errors.password && <p className="error-text">{errors.password}</p>}
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="login-btn"
       >
-        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
-          Register
-        </h2>
+        {loading ? "Registering..." : "Register"}
+      </button>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px",
-          }}
-        />
-
-        {errors.name && (
-          <p
-            style={{
-              color: "red",
-              fontSize: "14px",
-              marginTop: "5px",
-              marginBottom: "15px",
-            }}
-          >
-            {errors.name}
-          </p>
-        )}
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px",
-          }}
-        />
-
-        {errors.email && (
-          <p
-            style={{
-              color: "red",
-              fontSize: "14px",
-              marginTop: "5px",
-              marginBottom: "15px",
-            }}
-          >
-            {errors.email}
-          </p>
-        )}
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px",
-          }}
-        />
-
-        {errors.password && (
-          <p
-            style={{
-              color: "red",
-              fontSize: "14px",
-              marginTop: "5px",
-              marginBottom: "20px",
-            }}
-          >
-            {errors.password}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "10px",
-            cursor: loading ? "not-allowed" : "pointer",
-            opacity: loading ? 0.7 : 1,
-          }}
+      <div className="login-footer">
+        Already have an account?{" "}
+        <span
+          style={{ color: "#0d6efd", cursor: "pointer", fontWeight: "600" }}
+          onClick={() => navigate("/login")}
         >
-          {loading ? "Registering..." : "Register"}
-        </button>
-      </form>
-    </div>
-  );
+          Login
+        </span>
+      </div>
+    </form>
+  </div>
+);
 }
 
 export default Register;

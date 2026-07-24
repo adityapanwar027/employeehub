@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../services/axios";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import { FaUserCircle, FaBuilding } from "react-icons/fa";
+import "./RecentActivity.css";
 
 function RecentActivity() {
   const [employees, setEmployees] = useState([]);
@@ -25,51 +28,46 @@ function RecentActivity() {
   };
 
   return (
-    <div
-      style={{
-        background: "#fff",
-        padding: "25px",
-        borderRadius: "10px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-      }}
+    <motion.div
+      className="recent-card"
+      initial={{ opacity: 0, y: 35 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
     >
-      <h3
-        style={{
-          marginBottom: "20px",
-          fontWeight: "bold",
-        }}
-      >
-        Recent Employees
-      </h3>
+      <div className="recent-header">
+        <h2>Recent Employees</h2>
+        <p>Latest employees added to EmployeeHub</p>
+      </div>
 
       {employees.length === 0 ? (
-        <p>No recent employees found.</p>
+        <div className="empty-state">
+          No recent employees found.
+        </div>
       ) : (
-        <ul
-          style={{
-            margin: 0,
-            paddingLeft: "20px",
-          }}
-        >
+        <div className="employee-grid">
           {employees.map((employee) => (
-            <li
+            <motion.div
+              whileHover={{ y: -5 }}
               key={employee._id}
-              style={{
-                marginBottom: "12px",
-                color: "#495057",
-                lineHeight: "1.6",
-              }}
+              className="employee-card"
             >
-              <strong>{employee.name}</strong>
+              <div className="employee-avatar">
+                <FaUserCircle />
+              </div>
 
-              {employee.department && (
-                <> — {employee.department.name}</>
-              )}
-            </li>
+              <div className="employee-info">
+                <h4>{employee.name}</h4>
+
+                <span className="department-badge">
+                  <FaBuilding />
+                  {employee.department?.name || "No Department"}
+                </span>
+              </div>
+            </motion.div>
           ))}
-        </ul>
+        </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 

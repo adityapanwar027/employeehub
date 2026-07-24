@@ -1,0 +1,238 @@
+.department-page {
+  padding: 30px;
+}
+
+.department-header {
+  margin-bottom: 30px;
+}
+
+.department-header h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.department-header p {
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.department-form-card,
+.search-card,
+.department-table-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 25px;
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.08);
+}
+
+.department-form-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px;
+  color: #0f172a;
+  font-size: 22px;
+}
+
+.department-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 15px;
+  align-items: center;
+}
+
+.department-form input {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid #dbe3ef;
+  border-radius: 12px;
+  outline: none;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+.department-form input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.save-btn,
+.cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 18px;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+}
+
+.cancel-btn {
+  background: #64748b;
+}
+
+.cancel-btn:hover {
+  background: #475569;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 13px 16px 13px 45px;
+  border: 1px solid #dbe3ef;
+  border-radius: 12px;
+  outline: none;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.search-box input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  color: #64748b;
+}
+
+.department-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.department-table thead {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+}
+
+.department-table th {
+  padding: 18px;
+  text-align: left;
+  font-size: 15px;
+}
+
+.department-table td {
+  padding: 18px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.department-table tbody tr {
+  transition: 0.3s;
+}
+
+.department-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.department-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.edit-btn {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.delete-btn {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  transform: translateY(-2px);
+}
+
+.loading,
+.no-data {
+  text-align: center;
+  padding: 35px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+@media (max-width: 992px) {
+  .department-form {
+    grid-template-columns: 1fr;
+  }
+
+  .form-buttons {
+    width: 100%;
+  }
+
+  .save-btn,
+  .cancel-btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .department-page {
+    padding: 20px;
+  }
+
+  .department-header h1 {
+    font-size: 28px;
+  }
+
+  .department-table th,
+  .department-table td {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .department-table-card {
+    overflow-x: auto;
+  }
+}

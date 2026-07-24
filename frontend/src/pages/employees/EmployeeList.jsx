@@ -1,13 +1,26 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import {
+  FaPlus,
+  FaSearch,
+  FaEye,
+  FaEdit,
+  FaTrash,
+  FaUserCircle,
+} from "react-icons/fa";
+
 import {
   getEmployees,
   deleteEmployee,
   searchEmployees,
   getEmployeesByDepartment,
 } from "../../services/employeeService";
+
 import { getDepartments } from "../../services/departmentService";
+
+import "./EmployeeList.css";
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -24,10 +37,13 @@ const EmployeeList = () => {
   async function loadEmployees() {
     try {
       setLoading(true);
+
       const data = await getEmployees();
+
       setEmployees(data.employees);
     } catch (error) {
       console.error(error);
+      toast.error("Failed to load employees");
     } finally {
       setLoading(false);
     }
@@ -36,6 +52,7 @@ const EmployeeList = () => {
   async function loadDepartments() {
     try {
       const data = await getDepartments();
+
       setDepartments(data.departments);
     } catch (error) {
       console.error(error);
@@ -50,10 +67,12 @@ const EmployeeList = () => {
 
     try {
       setLoading(true);
+
       const data = await searchEmployees(search);
+
       setEmployees(data.employees);
     } catch (error) {
-      console.error(error);
+      toast.error("Search failed");
     } finally {
       setLoading(false);
     }
@@ -69,10 +88,12 @@ const EmployeeList = () => {
 
     try {
       setLoading(true);
+
       const data = await getEmployeesByDepartment(departmentId);
+
       setEmployees(data.employees);
     } catch (error) {
-      console.error(error);
+      toast.error("Filter failed");
     } finally {
       setLoading(false);
     }
@@ -85,137 +106,107 @@ const EmployeeList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this employee?")) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this employee?"
+      )
+    )
+      return;
 
     try {
       await deleteEmployee(id);
+
       toast.success("Employee deleted successfully");
+
       loadEmployees();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to delete employee");
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to delete employee"
+      );
     }
   };
 
-  return (
-    <div
-      style={{
-        background: "#fff",
-        padding: "25px",
-        borderRadius: "10px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-      }}
+    return (
+    <motion.div
+      className="employee-page"
+      initial={{ opacity: 0, y: 25 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "25px",
-          flexWrap: "wrap",
-          gap: "15px",
-        }}
-      >
-        <h2 style={{ margin: 0 }}>Employee List</h2>
+      <div className="employee-header">
+        <div>
+          <h1>Employees</h1>
+          <p>Manage all employees in EmployeeHub</p>
+        </div>
 
-        <Link
-          to="/employees/add"
-          style={{
-            background: "#0d6efd",
-            color: "#fff",
-            padding: "10px 18px",
-            borderRadius: "8px",
-            textDecoration: "none",
-            fontWeight: "600",
-          }}
-        >
+        <Link to="/employees/add" className="add-btn">
+          <FaPlus />
           Add Employee
         </Link>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "2fr 1fr 2fr 1fr",
-          gap: "15px",
-          marginBottom: "25px",
-        }}
-      >
-        <input
-          type="text"
-          placeholder="Search by Name or Email"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{
-            padding: "12px",
-            borderRadius: "8px",
-            border: "1px solid #ced4da",
-          }}
-        />
+      <div className="employee-toolbar">
+        <div className="search-box">
+          <FaSearch className="search-icon" />
+
+          <input
+            type="text"
+            placeholder="Search employee..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
 
         <button
+          className="search-btn"
           onClick={handleSearch}
-          style={{
-            background: "#198754",
-            color: "#fff",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
         >
           Search
         </button>
 
         <select
+          className="department-select"
           value={selectedDepartment}
-          onChange={(e) => handleDepartmentFilter(e.target.value)}
-          style={{
-            padding: "12px",
-            borderRadius: "8px",
-            border: "1px solid #ced4da",
-          }}
+          onChange={(e) =>
+            handleDepartmentFilter(e.target.value)
+          }
         >
           <option value="">All Departments</option>
 
           {departments.map((department) => (
-            <option key={department._id} value={department._id}>
+            <option
+              key={department._id}
+              value={department._id}
+            >
               {department.name}
             </option>
           ))}
         </select>
 
         <button
+          className="reset-btn"
           onClick={handleReset}
-          style={{
-            background: "#6c757d",
-            color: "#fff",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
         >
           Reset
         </button>
       </div>
 
       {loading ? (
-        <h4 style={{ textAlign: "center" }}>Loading employees...</h4>
+        <div className="loading">
+          Loading employees...
+        </div>
       ) : (
-        <div style={{ overflowX: "auto" }}>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-            }}
-          >
+        <div className="table-card">
+          <table className="employee-table">
             <thead>
-              <tr style={{ background: "#0d6efd", color: "#fff" }}>
-                <th style={{ padding: "12px" }}>Employee ID</th>
-                <th style={{ padding: "12px" }}>Name</th>
-                <th style={{ padding: "12px" }}>Email</th>
-                <th style={{ padding: "12px" }}>Phone</th>
-                <th style={{ padding: "12px" }}>Position</th>
-                <th style={{ padding: "12px" }}>Department</th>
-                <th style={{ padding: "12px" }}>Actions</th>
+              <tr>
+                <th>Employee</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Position</th>
+                <th>Department</th>
+                <th>Actions</th>
               </tr>
             </thead>
 
@@ -223,52 +214,68 @@ const EmployeeList = () => {
               {employees.length > 0 ? (
                 employees.map((employee) => (
                   <tr key={employee._id}>
-                    <td style={{ padding: "12px", borderBottom: "1px solid #eee" }}>{employee.employeeId}</td>
-                    <td style={{ padding: "12px", borderBottom: "1px solid #eee" }}>{employee.name}</td>
-                    <td style={{ padding: "12px", borderBottom: "1px solid #eee" }}>{employee.email}</td>
-                    <td style={{ padding: "12px", borderBottom: "1px solid #eee" }}>{employee.phone}</td>
-                    <td style={{ padding: "12px", borderBottom: "1px solid #eee" }}>{employee.position}</td>
-                    <td style={{ padding: "12px", borderBottom: "1px solid #eee" }}>{employee.department?.name || "N/A"}</td>
+                    <td>
+                      <div className="employee-info">
+                        <div className="employee-avatar">
+                          <FaUserCircle />
+                        </div>
 
-                    <td style={{ padding: "12px", borderBottom: "1px solid #eee" }}>
-                      <Link
-                        to={`/employees/${employee._id}`}
-                        style={{ marginRight: "8px" }}
-                      >
-                        View
-                      </Link>
+                        <div>
+                          <h4>{employee.name}</h4>
 
-                      <Link
-                        to={`/employees/edit/${employee._id}`}
-                        style={{ marginRight: "8px" }}
-                      >
-                        Edit
-                      </Link>
+                          <span>
+                            {employee.employeeId}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
 
-                      <button
-                        onClick={() => handleDelete(employee._id)}
-                        style={{
-                          background: "#dc3545",
-                          color: "#fff",
-                          border: "none",
-                          padding: "6px 10px",
-                          borderRadius: "6px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Delete
-                      </button>
+                    <td>{employee.email}</td>
+
+                    <td>{employee.phone}</td>
+
+                    <td>{employee.position}</td>
+
+                    <td>
+                      <span className="department-badge">
+                        {employee.department?.name ||
+                          "N/A"}
+                      </span>
+                    </td>
+
+                    <td>
+                      <div className="action-buttons">
+                        <Link
+                          to={`/employees/${employee._id}`}
+                          className="view-btn"
+                        >
+                          <FaEye />
+                        </Link>
+
+                        <Link
+                          to={`/employees/edit/${employee._id}`}
+                          className="edit-btn"
+                        >
+                          <FaEdit />
+                        </Link>
+
+                        <button
+                          className="delete-btn"
+                          onClick={() =>
+                            handleDelete(employee._id)
+                          }
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td
-                    colSpan="7"
-                    style={{
-                      textAlign: "center",
-                      padding: "20px",
-                    }}
+                    colSpan="6"
+                    className="no-data"
                   >
                     No employees found.
                   </td>
@@ -278,7 +285,7 @@ const EmployeeList = () => {
           </table>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

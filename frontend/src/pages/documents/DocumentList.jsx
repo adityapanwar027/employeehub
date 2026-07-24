@@ -1,11 +1,25 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
+import {
+  FaFilePdf,
+  FaFileWord,
+  FaFileExcel,
+  FaFileImage,
+  FaFileAlt,
+  FaDownload,
+  FaTrash,
+  FaFolderOpen,
+} from "react-icons/fa";
+
 import {
   getDocuments,
   downloadDocument,
   deleteDocument,
 } from "../../services/documentService";
+
+import "./DocumentList.css";
 
 const DocumentList = () => {
   const { employeeId } = useParams();
@@ -33,14 +47,19 @@ const DocumentList = () => {
 
       const response = await downloadDocument(id);
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(
+        new Blob([response.data])
+      );
+
       const link = document.createElement("a");
 
       link.href = url;
       link.setAttribute("download", fileName);
 
       document.body.appendChild(link);
+
       link.click();
+
       link.remove();
 
       toast.success("Download started");
@@ -52,7 +71,8 @@ const DocumentList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this document?")) return;
+    if (!window.confirm("Delete this document?"))
+      return;
 
     try {
       setLoadingId(id);
@@ -69,126 +89,159 @@ const DocumentList = () => {
     }
   };
 
-  return (
-    <div
-      style={{
-        maxWidth: "1100px",
-        margin: "0 auto",
-        background: "#fff",
-        padding: "30px",
-        borderRadius: "10px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-      }}
-    >
-      <h2
-        style={{
-          marginBottom: "25px",
-          fontWeight: "bold",
-          color: "#212529",
-        }}
-      >
-        Employee Documents
-      </h2>
+  const getFileIcon = (type = "") => {
+    const fileType = type.toLowerCase();
 
-      <div style={{ overflowX: "auto" }}>
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-          }}
-        >
+    if (fileType.includes("pdf"))
+      return <FaFilePdf className="pdf" />;
+
+    if (
+      fileType.includes("word") ||
+      fileType.includes("doc")
+    )
+      return <FaFileWord className="word" />;
+
+    if (
+      fileType.includes("excel") ||
+      fileType.includes("sheet") ||
+      fileType.includes("xls")
+    )
+      return <FaFileExcel className="excel" />;
+
+    if (fileType.includes("image"))
+      return <FaFileImage className="image" />;
+
+    return <FaFileAlt className="file" />;
+  };
+    const totalSize = documents.reduce(
+    (sum, doc) => sum + (doc.fileSize || 0),
+    0
+  );
+
+  return (
+    <motion.div
+      className="document-page"
+      initial={{ opacity: 0, y: 25 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="document-header">
+        <div>
+          <h1>Employee Documents</h1>
+          <p>Manage employee files and records</p>
+        </div>
+      </div>
+
+      <div className="document-stats">
+
+        <div className="stat-card">
+          <FaFolderOpen className="stat-icon" />
+          <div>
+            <h2>{documents.length}</h2>
+            <span>Total Documents</span>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <FaFileAlt className="stat-icon" />
+          <div>
+            <h2>{(totalSize / 1024).toFixed(2)} KB</h2>
+            <span>Total Storage</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div className="document-table-card">
+
+        <table className="document-table">
+
           <thead>
-            <tr style={{ background: "#f8f9fa" }}>
-              <th style={thStyle}>Document Name</th>
-              <th style={thStyle}>File Name</th>
-              <th style={thStyle}>Type</th>
-              <th style={thStyle}>Size (KB)</th>
-              <th style={thStyle}>Actions</th>
+            <tr>
+              <th>Document</th>
+              <th>File Name</th>
+              <th>Type</th>
+              <th>Size</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
+
             {documents.length > 0 ? (
               documents.map((doc) => (
                 <tr key={doc._id}>
-                  <td style={tdStyle}>{doc.documentName}</td>
-                  <td style={tdStyle}>{doc.fileName}</td>
-                  <td style={tdStyle}>{doc.fileType}</td>
-                  <td style={tdStyle}>
-                    {(doc.fileSize / 1024).toFixed(2)}
+
+                  <td>
+                    <div className="document-name">
+                      {getFileIcon(doc.fileType)}
+
+                      <div>
+                        <h4>{doc.documentName}</h4>
+                      </div>
+                    </div>
                   </td>
 
-                  <td style={tdStyle}>
-                    <button
-                      onClick={() =>
-                        handleDownload(doc._id, doc.fileName)
-                      }
-                      disabled={loadingId === doc._id}
-                      style={{
-                        marginRight: "10px",
-                        padding: "8px 14px",
-                        background: "#198754",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "6px",
-                        cursor:
-                          loadingId === doc._id
-                            ? "not-allowed"
-                            : "pointer",
-                      }}
-                    >
-                      Download
-                    </button>
+                  <td>{doc.fileName}</td>
 
-                    <button
-                      onClick={() => handleDelete(doc._id)}
-                      disabled={loadingId === doc._id}
-                      style={{
-                        padding: "8px 14px",
-                        background: "#dc3545",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "6px",
-                        cursor:
-                          loadingId === doc._id
-                            ? "not-allowed"
-                            : "pointer",
-                      }}
-                    >
-                      Delete
-                    </button>
+                  <td>{doc.fileType}</td>
+
+                  <td>
+                    {(doc.fileSize / 1024).toFixed(2)} KB
                   </td>
+
+                  <td>
+
+                    <div className="action-buttons">
+
+                      <button
+                        className="download-btn"
+                        disabled={loadingId === doc._id}
+                        onClick={() =>
+                          handleDownload(
+                            doc._id,
+                            doc.fileName
+                          )
+                        }
+                      >
+                        <FaDownload />
+                      </button>
+
+                      <button
+                        className="delete-btn"
+                        disabled={loadingId === doc._id}
+                        onClick={() =>
+                          handleDelete(doc._id)
+                        }
+                      >
+                        <FaTrash />
+                      </button>
+
+                    </div>
+
+                  </td>
+
                 </tr>
               ))
             ) : (
               <tr>
                 <td
                   colSpan="5"
-                  style={{
-                    textAlign: "center",
-                    padding: "20px",
-                  }}
+                  className="no-data"
                 >
                   No documents found.
                 </td>
               </tr>
             )}
+
           </tbody>
+
         </table>
+
       </div>
-    </div>
+
+    </motion.div>
   );
-};
-
-const thStyle = {
-  padding: "14px",
-  textAlign: "left",
-  borderBottom: "2px solid #dee2e6",
-};
-
-const tdStyle = {
-  padding: "14px",
-  borderBottom: "1px solid #dee2e6",
 };
 
 export default DocumentList;

@@ -11,14 +11,16 @@ const createEmployee = asyncHandler(async (req, res) => {
       message: "Employee created successfully",
       employee,
     });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-});
 
+  } catch (error) {
+  console.error(error);
+
+  res.status(500).json({
+    success: false,
+    message: error.message,
+  });
+}
+});
 // Get All Employees
 const getEmployees = async (req, res) => {
   try {
